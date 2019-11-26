@@ -12,15 +12,18 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    private let navigationController = UINavigationController()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil)
         -> Bool {
 
         window = UIWindow()
+
         let configurator = CharacterListConfigurator()
         let view = configurator.configure()
-        window?.rootViewController = view
+        navigationController.viewControllers = [view]
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         return true
     }

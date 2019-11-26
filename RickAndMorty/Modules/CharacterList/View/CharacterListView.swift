@@ -7,8 +7,12 @@
 //
 
 import Foundation
+import RickAndMortyAPI
 
 protocol CharacterListView: class {
+    // TODO, should CharacterData insted of the ModelCharacter
+    func setCharacters(with data: [ModelCharacter])
+
     func startRefresh()
     func stopRefresh()
 

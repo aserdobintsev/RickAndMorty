@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RickAndMortyAPI
 
 final class CharacterListConfigurator {
     func configure() -> UIViewController {
@@ -21,7 +22,6 @@ final class CharacterListConfigurator {
         check that controller is initial view controller
         """)
         }
-
         let presenter = CharacterListViewPresenter(view: view)
         view.presenter = presenter
         return view

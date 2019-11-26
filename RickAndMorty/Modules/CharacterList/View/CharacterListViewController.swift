@@ -7,16 +7,24 @@
 //
 
 import UIKit
-
+import RickAndMortyAPI
 private let reuseIdentifier = "Cell"
 
 class CharacterListViewController: UICollectionViewController {
+    private let itemsPerRow: CGFloat = 1
+    private let itemHeight: CGFloat = 100
+    private let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
 
     var presenter: CharacterListPresenter?
+    private var charactersData = [ModelCharacter]()
+
+    private var reuseIdentifier = "CharacterCellViewId"
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.title = "Rick And Morty Characters"
+        collectionView.delegate = self
+        collectionView.dataSource = self
         self.registerCollectionContent()
         configurePullToRefresh()
         configurePagination()
@@ -25,7 +33,7 @@ class CharacterListViewController: UICollectionViewController {
     }
 
     private func registerCollectionContent() {
-        self.collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView?.register(CharacterCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     }
 
     private func configurePullToRefresh() {
@@ -56,72 +64,62 @@ class CharacterListViewController: UICollectionViewController {
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func collectionView(_ collectionView: UICollectionView,
                                  numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 0
+
+        return charactersData.count
     }
 
     override func collectionView(_ collectionView: UICollectionView,
-                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView
+            .dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
 
-        // Configure the cell
-
+        if let cell = cell as? CharacterCollectionViewCell {
+            cell.configure(with: charactersData[indexPath.row])
+        }
         return cell
     }
 
     // MARK: UICollectionViewDelegate
 
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView,
-     shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView,
-     shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item,
-    // and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView,
-     shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        //presenter?.showDetails(for: data[indexPath.row])
     }
 
-    override func collectionView(_ collectionView: UICollectionView,
-     canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        let paddingSpace = (sectionInsets.left + sectionInsets.right) * itemsPerRow
+        let widthPerItem = (collectionView.bounds.width - paddingSpace) / itemsPerRow
+        return CGSize(width: widthPerItem, height: itemHeight)
     }
 
-    override func collectionView(_ collectionView: UICollectionView,
-     performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets.zero
     }
-    */
 
 }
 
 extension CharacterListViewController: CharacterListView {
+    func setCharacters(with data: [ModelCharacter]) {
+        charactersData = data
+        collectionView.reloadData()
+    }
 
     func startRefresh() {
-
+        self.collectionView.refreshControl?.beginRefreshing()
     }
 
     func stopRefresh() {
-
+        self.collectionView.refreshControl?.endRefreshing()
+        self.collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
 
     func startLoadMore() {
