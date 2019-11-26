@@ -14,3 +14,8 @@ target 'RickAndMorty' do
     use_frameworks!
     common_pods
 end
+
+target 'RickAndMortyAPI' do
+    use_frameworks!
+    pod 'Alamofire', '~> 4.9'
+end
