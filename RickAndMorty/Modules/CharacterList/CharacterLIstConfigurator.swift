@@ -13,7 +13,8 @@ final class CharacterListConfigurator {
     func configure() -> UIViewController {
 
         guard let view = UIStoryboard(name: String(describing: CharacterListViewController.self),
-                                      bundle: Bundle.main).instantiateInitialViewController() as? CharacterListViewController
+                                      bundle: Bundle.main)
+            .instantiateInitialViewController() as? CharacterListViewController
                     else {
                         fatalError("""
         Can't load CharacterListViewController from storyboard,

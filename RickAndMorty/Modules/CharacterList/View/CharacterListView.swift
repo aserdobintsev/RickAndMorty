@@ -15,6 +15,5 @@ protocol CharacterListView: class {
     func startLoadMore()
     func stopLoadMore()
 
-    
     func networkErrorOccured()
 }
